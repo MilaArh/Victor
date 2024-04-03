@@ -5,6 +5,7 @@ from selenium.webdriver.support.select import Select
 import pytest
 from selenium.webdriver.support import expected_conditions as EC
 
+
 # Авторизация
 def test_correct_login(browser):
     browser.get("https://www.saucedemo.com/")
@@ -81,7 +82,7 @@ def test_delete_from_cart(browser):
     assert len(elements_in_cart) == 0, 'товар остается в корзине'
 
 
-def test_add_to_cart_from_cart(browser):
+def test_add_to_cart_from_cart_assert_text(browser):
     """ Добавление товара в корзину из карточки товара """
     login(browser)
 
@@ -97,7 +98,7 @@ def test_add_to_cart_from_cart(browser):
     assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
 
 
-def test_delete_from_cart(browser):
+def test_delete_from_cart_assert_len(browser):
     """Удаление товара из корзины через корзину """
     login(browser)
 
