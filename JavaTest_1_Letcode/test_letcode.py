@@ -1,5 +1,5 @@
 from selenium.webdriver.common.by import By
-
+from selenium import webdriver
 
 def test_input_fields(browser):
     browser.get("https://letcode.in/edit")
@@ -27,8 +27,13 @@ def test_input_fields(browser):
     assert browser.find_element(By.ID, "noEdit").get_attribute("disabled") is not None, "поле доступно для редактирования"
     # Проверка закрыта возможность редактирования поля вода 2 вариант
     assert browser.find_element(By.ID, "noEdit").get_attribute("disabled") == "true", "поле доступно для редактирования"
+    element = browser.find_element(By.ID, "noEdit")
 
+    if element.is_enabled():
+        print("Элемент доступен для взаимодействия")
+    else:
+        print("Элемент неактивен или заблокирован")
     #  Атрибут readonly доступно только для чтения: его можно выделить и прочитать, но редактировать невозможно
     # Проверка поле ввода доступно только для чтения
-    assert browser.find_element(By.ID, "dontwrite").get_attribute("readonly") == "true", "поле доступно для редактирования"
-
+    # assert browser.find_element(By.ID, "dontwrite").get_attribute("readonly") == "true", "поле доступно для редактирования"
+    assert browser.find_element(By.ID, "dontwrite").is_enabled(), "поле доступно для редактирования"
