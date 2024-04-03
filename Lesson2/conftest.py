@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from locators import *
 
 
 @pytest.fixture()
@@ -44,3 +45,9 @@ def is_element_present(browser, how, what) -> bool:# этот элемент е�
     except NoSuchElementException:
         return False
     return True
+@pytest.fixture
+def login(browser):
+    browser.get("https://www.saucedemo.com/")
+    browser.find_element(*USER_NAME).send_keys('standard_user')
+    browser.find_element(*PASSWORD).send_keys('secret_sauce')
+    browser.find_element(*SUBMIT).click()

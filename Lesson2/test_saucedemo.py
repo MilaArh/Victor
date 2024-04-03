@@ -1,9 +1,12 @@
+import time
+
 from selenium.common import NoSuchElementException
 from .conftest import is_not_element_present, is_element_present
 from .locators import *
 from selenium.webdriver.support.select import Select
 import pytest
 from selenium.webdriver.support import expected_conditions as EC
+
 
 # Авторизация
 def test_correct_login(browser):
@@ -41,33 +44,21 @@ def test_login_error(browser):
     assert error_v.text.startswith('Epic sadface'), 'Текст сообщения об ошибке не начинается с Epic sadface'
 
 
-def login(browser):
-    browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('standard_user')
-    browser.find_element(*PASSWORD).send_keys('secret_sauce')
-    browser.find_element(*SUBMIT).click()
-
-
 # Корзина
-def test_add_to_cart_from_catalog(browser):
+def test_add_to_cart_from_catalog(browser, login):
     """ Добавление товара в корзину через каталог """
 
-    login(browser)
     add_to_cart = browser.find_element(*ADD_TO_CART)
     add_to_cart.click()
-
     link_cart = "https://www.saucedemo.com/cart.html"
     browser.get(link_cart)
-
-    element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
-
-    assert is_element_present(browser,By.CLASS_NAME, 'inventory_ite-m_name'), 'товар не добавлен в корзину'
+    assert is_element_present(browser, By.CLASS_NAME, 'inventory_item_name'), 'товар не добавлен в корзину'
+    # element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
     # assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
 
 
-def test_delete_from_cart(browser):
+def test_delete_from_cart(browser, login):
     """Удаление товара из корзины через корзину """
-    login(browser)
 
     add_to_cart = browser.find_element(*ADD_TO_CART)
     add_to_cart.click()
@@ -81,9 +72,9 @@ def test_delete_from_cart(browser):
     assert len(elements_in_cart) == 0, 'товар остается в корзине'
 
 
-def test_add_to_cart_from_cart(browser):
+def test_add_to_cart_from_cart(browser, login):
     """ Добавление товара в корзину из карточки товара """
-    login(browser)
+    # login(browser)
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
 
@@ -97,9 +88,9 @@ def test_add_to_cart_from_cart(browser):
     assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
 
 
-def test_delete_from_cart(browser):
+def test_delete_from_cart(browser, login):
     """Удаление товара из корзины через корзину """
-    login(browser)
+    # login(browser)
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
 
@@ -114,19 +105,19 @@ def test_delete_from_cart(browser):
 
 
 # Карточка товара
-def test_go_to_cart_click_img(browser):
+def test_go_to_cart_click_img(browser, login):
     """ Успешный переход к карточке товара после клика на картинку товара """
 
-    login(browser)
+    # login(browser)
     browser.find_element(*IMG_CART).click()
 
     assert browser.current_url == 'https://www.saucedemo.com/inventory-item.html?id=4', 'не выполнен переход на карточку товара'
 
 
-def test_go_to_cart_click_name(browser):
+def test_go_to_cart_click_name(browser, login):
     """Успешный переход к карточке товара после клика на название товара """
 
-    login(browser)
+    # login(browser)
 
     browser.find_element(*NAME_CART).click()
 
@@ -134,10 +125,10 @@ def test_go_to_cart_click_name(browser):
 
 
 # Оформление заказа
-def test_placing_an_order(browser):
+def test_placing_an_order(browser, login):
     """Оформление заказа используя корректные данные"""
 
-    login(browser)
+    # login(browser)
     browser.find_element(*ADD_TO_CART).click()
     browser.find_element(*BASKET).click()
     browser.find_element(*CHECKOUT).click()
@@ -151,10 +142,10 @@ def test_placing_an_order(browser):
 
 
 # Фильтр
-def test_filter_a_to_z(browser):
+def test_filter_a_to_z(browser, login):
     """Проверка работоспособности фильтра (A to Z)"""
 
-    login(browser)
+    # login(browser)
 
     select = Select(browser.find_element(*SELECT))
     select.select_by_value('az')
@@ -165,10 +156,10 @@ def test_filter_a_to_z(browser):
     assert current_list == sorted_list, 'Названия товаров не отсортированы по алфавиту A-Z'
 
 
-def test_filter_z_to_a(browser):
+def test_filter_z_to_a(browser, login):
     """Проверка работоспособности фильтра (Z to A)"""
 
-    login(browser)
+    # login(browser)
 
     select = Select(browser.find_element(*SELECT))
     select.select_by_value('za')
@@ -179,10 +170,10 @@ def test_filter_z_to_a(browser):
     assert current_list == sorted_list, 'Названия товаров не отсортированы по алфавиту Z-A'
 
 
-def test_filter_high_to_low(browser):
+def test_filter_high_to_low(browser, login):
     """Проверка работоспособности фильтра (high to low)"""
 
-    login(browser)
+    # login(browser)
 
     select = Select(browser.find_element(*SELECT))
     select.select_by_value('hilo')
@@ -193,10 +184,10 @@ def test_filter_high_to_low(browser):
     assert current_list == sorted_list, 'Названия товаров не отсортированы по стоимости от high до low'
 
 
-def test_filter_low_to_high(browser):
+def test_filter_low_to_high(browser, login):
     """Проверка работоспособности фильтра (low to high)"""
 
-    login(browser)
+    # login(browser)
 
     select = Select(browser.find_element(*SELECT))
     select.select_by_value('lohi')
@@ -208,10 +199,10 @@ def test_filter_low_to_high(browser):
 
 
 # Бургер меню
-def test_burger_menu_logout(browser, wait):
+def test_burger_menu_logout(browser, wait, login):
     """Выход из системы"""
 
-    login(browser)
+    # login(browser)
     browser.find_element(*BURGER_MENU).click()
 
     wait.until(EC.element_to_be_clickable(LOGOUT)).click()
@@ -219,10 +210,10 @@ def test_burger_menu_logout(browser, wait):
     assert browser.current_url == 'https://www.saucedemo.com/', 'выход из системы не осуществлен'
 
 
-def test_burger_menu_about(browser, wait):
+def test_burger_menu_about(browser, wait, login):
     """Проверка работоспособности кнопки "About" в меню"""
 
-    login(browser)
+    # login(browser)
     browser.find_element(*BURGER_MENU).click()
 
     wait.until(EC.element_to_be_clickable(ABOUT)).click()
@@ -230,10 +221,10 @@ def test_burger_menu_about(browser, wait):
     assert browser.current_url == 'https://saucelabs.com/', 'кнопки "About" в меню работает не корректно'
 
 
-def test_burger_menu_reset(browser, wait):
+def test_burger_menu_reset(browser, wait, login):
     """Проверка работоспособности кнопки "Reset App State"""
 
-    login(browser)
+    # login(browser)
     browser.find_element(*ADD_TO_CART).click()
     browser.find_element(*BURGER_MENU).click()
     wait.until(EC.element_to_be_clickable(RESET_APP_STATE)).click()
@@ -244,12 +235,15 @@ def test_burger_menu_reset(browser, wait):
         assert True
 
 
-def test_burger_menu_reset1(browser, wait):
+def test_burger_menu_reset1(browser, wait, login):
     """Проверка работоспособности кнопки "Reset App State"""
 
-    login(browser)
+    # login(browser)
     browser.find_element(*ADD_TO_CART).click()
     browser.find_element(*BURGER_MENU).click()
     wait.until(EC.element_to_be_clickable(RESET_APP_STATE)).click()
 
     assert is_not_element_present(browser, By.CLASS_NAME, "shopping_cart_badge"), 'Товар остался в корзине'
+
+
+
