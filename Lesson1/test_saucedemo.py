@@ -60,9 +60,8 @@ def test_add_to_cart_from_catalog(browser):
     link_cart = "https://www.saucedemo.com/cart.html"
     browser.get(link_cart)
 
-    element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
-
-    assert is_element_present(browser,By.CLASS_NAME, 'inventory_ite-m_name'), 'товар не добавлен в корзину'
+    assert is_element_present(browser, By.CLASS_NAME, 'inventory_item_name'), 'товар не добавлен в корзину'
+    # element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
     # assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
 
 
@@ -88,7 +87,7 @@ def test_add_to_cart_from_cart_assert_text(browser):
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
 
-    add_to_cart = browser.find_element(*ADD_TO_CART)
+    add_to_cart = browser.find_element(*ADD_TO_CART_ITEM)
     add_to_cart.click()
 
     link_cart = "https://www.saucedemo.com/cart.html"
@@ -104,8 +103,8 @@ def test_delete_from_cart_assert_len(browser):
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
 
-    browser.find_element(*ADD_TO_CART).click()
-    browser.find_element(By.ID, 'remove-sauce-labs-backpack').click()
+    browser.find_element(*ADD_TO_CART_ITEM).click()
+    browser.find_element(*REMOVE_ITEM).click()
 
     link_cart = "https://www.saucedemo.com/cart.html"
     browser.get(link_cart)

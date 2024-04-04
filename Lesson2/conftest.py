@@ -6,13 +6,15 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from locators import *
+
+from Lesson2.data import *
+from Lesson2.locators import *
 
 
 @pytest.fixture()
 def my_options():
     opt = Options()
-    # opt.add_argument('--headless') #скрыть окна браузера
+    opt.add_argument('--headless') #скрыть окна браузера
     opt.add_argument('--window-size=1920,1080')
     return opt
 
@@ -48,6 +50,6 @@ def is_element_present(browser, how, what) -> bool:# этот элемент е�
 @pytest.fixture
 def login(browser):
     browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('standard_user')
-    browser.find_element(*PASSWORD).send_keys('secret_sauce')
+    browser.find_element(*USER_NAME).send_keys(LOGIN)
+    browser.find_element(*PASSWORD).send_keys(PASSWORD_LOG)
     browser.find_element(*SUBMIT).click()

@@ -11,7 +11,7 @@ from selenium.webdriver.support import expected_conditions as EC
 @pytest.fixture()
 def my_options():
     opt = Options()
-    # opt.add_argument('--headless') #скрыть окна браузера
+    opt.add_argument('--headless') #скрыть окна браузера
     opt.add_argument('--window-size=1920,1080')
     return opt
 

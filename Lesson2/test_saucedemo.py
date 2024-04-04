@@ -1,43 +1,45 @@
-import time
-
 from selenium.common import NoSuchElementException
+from Lesson2.data import *
+from Lesson2.locators import *
 from .conftest import is_not_element_present, is_element_present
-from .locators import *
 from selenium.webdriver.support.select import Select
 import pytest
 from selenium.webdriver.support import expected_conditions as EC
 
+
+
+
 # Перенесли логин в conftest
 # Авторизация
 def test_correct_login(browser):
-    browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('standard_user')
-    browser.find_element(*PASSWORD).send_keys('secret_sauce')
+    browser.get(MAIN_PAGE)
+    browser.find_element(*USER_NAME).send_keys(LOGIN)
+    browser.find_element(*PASSWORD).send_keys(PASSWORD_LOG)
     browser.find_element(*SUBMIT).click()
     assert browser.current_url == 'https://www.saucedemo.com/inventory.html', 'не выполнен переход на страницу магазина'
 
 
 def test_wrong_login(browser):
-    browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('user')
-    browser.find_element(*PASSWORD).send_keys('user')
+    browser.get(MAIN_PAGE)
+    browser.find_element(*USER_NAME).send_keys(LOGIN_INVALID)
+    browser.find_element(*PASSWORD).send_keys(PASSWORD_INVALID)
     browser.find_element(*SUBMIT).click()
     assert browser.current_url == 'https://www.saucedemo.com/', 'пользователь не остался на странице регистрации'
 
 
 @pytest.mark.xfail  # игнорируем, предположим что user/user верные, программистами допущена ошибка,мы знаем что тест пока падает, ждем исправлений и  ставим спец пометку
 def test_wrong_login_no_enter_xfail(browser):
-    browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('user')
-    browser.find_element(*PASSWORD).send_keys('user')
+    browser.get(MAIN_PAGE)
+    browser.find_element(*USER_NAME).send_keys(LOGIN_INVALID)
+    browser.find_element(*PASSWORD).send_keys(PASSWORD_INVALID)
     browser.find_element(*SUBMIT).click()
     assert browser.current_url == 'https://www.saucedemo.com/inventory.html', 'не выполнен переход на страницу магазина'
 
 
 def test_login_error(browser):
-    browser.get("https://www.saucedemo.com/")
-    browser.find_element(*USER_NAME).send_keys('user')
-    browser.find_element(*PASSWORD).send_keys('user')
+    browser.get(MAIN_PAGE)
+    browser.find_element(*USER_NAME).send_keys(LOGIN_INVALID)
+    browser.find_element(*PASSWORD).send_keys(PASSWORD_INVALID)
     browser.find_element(*SUBMIT).click()
 
     error_v = browser.find_element(By.CSS_SELECTOR, "[data-test='error']")
@@ -50,8 +52,7 @@ def test_add_to_cart_from_catalog(browser, login):
 
     add_to_cart = browser.find_element(*ADD_TO_CART)
     add_to_cart.click()
-    link_cart = "https://www.saucedemo.com/cart.html"
-    browser.get(link_cart)
+    browser.get(MAIN_PAGE_CART)
     assert is_element_present(browser, By.CLASS_NAME, 'inventory_item_name'), 'товар не добавлен в корзину'
     # element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
     # assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
@@ -63,10 +64,8 @@ def test_delete_from_cart(browser, login):
     add_to_cart = browser.find_element(*ADD_TO_CART)
     add_to_cart.click()
 
-    link = "https://www.saucedemo.com/cart.html"
-    browser.get(link)
-    delete_from_cart = browser.find_element(By.ID, 'remove-sauce-labs-backpack')
-    delete_from_cart.click()
+    browser.get(MAIN_PAGE_CART)
+    browser.find_element(By.ID, 'remove-sauce-labs-backpack').click()
 
     elements_in_cart = browser.find_elements(By.CLASS_NAME, 'inventory_item_name')
     assert len(elements_in_cart) == 0, 'товар остается в корзине'
@@ -78,11 +77,10 @@ def test_add_to_cart_from_cart_assert_text(browser, login):
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
 
-    add_to_cart = browser.find_element(*ADD_TO_CART)
+    add_to_cart = browser.find_element(*ADD_TO_CART_ITEM)
     add_to_cart.click()
 
-    link_cart = "https://www.saucedemo.com/cart.html"
-    browser.get(link_cart)
+    browser.get(MAIN_PAGE_CART)
 
     element_in_cart = browser.find_element(By.CLASS_NAME, 'inventory_item_name')
     assert element_in_cart.text.startswith('Sauce Labs Backpack'), 'товар не добавлен в корзину'
@@ -93,12 +91,10 @@ def test_delete_from_cart_assert_len(browser, login):
     # login(browser)
 
     browser.get("https://www.saucedemo.com/inventory-item.html?id=4")
+    browser.find_element(*ADD_TO_CART_ITEM).click()
+    browser.find_element(*REMOVE_ITEM).click()
 
-    browser.find_element(*ADD_TO_CART).click()
-    browser.find_element(By.ID, 'remove-sauce-labs-backpack').click()
-
-    link_cart = "https://www.saucedemo.com/cart.html"
-    browser.get(link_cart)
+    browser.get(MAIN_PAGE_CART)
 
     elements_in_cart = browser.find_elements(By.CLASS_NAME, 'inventory_item_name')
     assert len(elements_in_cart) == 0, 'товар остается в корзине'
