@@ -60,4 +60,12 @@ def test_input_fields(browser):
     # Проверка поле ввода доступно только для чтения
     assert browser.find_element(By.ID, "dontwrite").get_attribute("readonly") == "true", "поле доступно для редактирования"
     assert browser.find_element(By.ID, "dontwrite").get_attribute("readonly") is not None, "поле доступно для редактирования"
+    assert browser.find_element(By.ID, "dontwrite").is_displayed() is True, "содержание поля скрыто"
+
+    element = browser.find_element(By.ID, "dontwrite")
+
+    if element.is_displayed():
+        print("Элемент с атрибутом readonly видим") #True
+    else:
+        print("Элемент с атрибутом readonly не видим") #False
 
