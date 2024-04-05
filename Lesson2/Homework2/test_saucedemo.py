@@ -1,6 +1,6 @@
 from selenium.common import NoSuchElementException
-from Lesson2.data import *
-from Lesson2.locators import *
+from Lesson2.Homework2.data import *
+from Lesson2.Homework2.locators import *
 from .conftest import is_not_element_present, is_element_present
 from selenium.webdriver.support.select import Select
 import pytest

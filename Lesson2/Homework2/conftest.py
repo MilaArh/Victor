@@ -7,8 +7,8 @@ import time
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from Lesson2.data import *
-from Lesson2.locators import *
+from Lesson2.Homework2.data import *
+from Lesson2.Homework2.locators import *
 
 
 @pytest.fixture()
